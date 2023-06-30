@@ -130,7 +130,7 @@ public:
   ReallyServer()
   {
     quicr::RelayInfo relayInfo = { .hostname = "127.0.0.1",
-                                   .port = 1234,
+                                   .port = 2048,
                                    .proto = quicr::RelayInfo::Protocol::QUIC };
 
     qtransport::TransportConfig tcfg{ .tls_cert_filename = "./server-cert.pem",

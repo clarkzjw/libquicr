@@ -6,6 +6,11 @@
 #include <quicr/quicr_common.h>
 #include <sstream>
 #include <thread>
+#include <iomanip>
+#include <iostream>
+#include <sstream>
+#include <thread>
+#include <fstream>
 
 #include "testLogger.h"
 
@@ -54,8 +59,13 @@ public:
     log_msg << "recv object: name: " << quicr_name
             << " data sz: " << data.size();
 
-    if (data.size())
-      log_msg << " data: " << data.data();
+    if (data.size()) {
+      std::ofstream output("data/output", std::ios::binary);
+      std::cout << sizeof(uint8_t) << std::endl;
+      std::cout << data.size() << std::endl;
+      output.write(reinterpret_cast<char*>(&data[0]), sizeof(uint8_t) * data.size());
+      output.close();
+    }
 
     logger.log(qtransport::LogLevel::info, log_msg.str());
   }
@@ -108,7 +118,7 @@ main(int argc, char* argv[])
     relayName = defaultRelay;
   }
 
-  int port = 1234;
+  int port = 2048;
   char* portVar = getenv("REALLY_PORT");
   if (portVar) {
     port = atoi(portVar);
@@ -145,11 +155,25 @@ main(int argc, char* argv[])
                "Publish Intent for name: " + std::string(name) +
                  " == namespace: " + std::string(nspace));
     client.publishIntent(pd, nspace, {}, {}, {});
-    std::this_thread::sleep_for(std::chrono::seconds(1));
 
     // do publish
     logger.log(qtransport::LogLevel::info, "Publish");
-    client.publishNamedObject(name, 0, 10000, false, std::move(data));
+
+    //get length of file
+    std::ifstream infile("data/input");
+    infile.seekg(0, std::ios::end);
+    size_t length = infile.tellg();
+    infile.seekg(0, std::ios::beg);
+    std::cout << length << std::endl;
+
+    std::vector<char> buffers(length);
+
+    infile.read(&buffers[0], length);
+    quicr::bytes buf(buffers.begin(), buffers.end());
+
+    std::cout << "buf size " << buf.size() << std::endl;
+
+    client.publishNamedObject(name, 0, 10000, false, std::move(buf));
 
   } else {
     // do subscribe
@@ -165,21 +189,15 @@ main(int argc, char* argv[])
 
     quicr::SubscribeIntent intent = quicr::SubscribeIntent::immediate;
     quicr::bytes empty;
-    client.subscribe(
-      sd, nspace, intent, "origin_url", false, "auth_token", std::move(empty));
+    client.subscribe(sd, nspace, intent, "origin_url", false, "auth_token", std::move(empty));
 
-    logger.log(qtransport::LogLevel::info,
-               "Sleeping for 20 seconds before unsubscribing");
-    std::this_thread::sleep_for(std::chrono::seconds(20));
+    while (true) {
+      logger.log(qtransport::LogLevel::info, "Sleeping");
+      std::this_thread::sleep_for(std::chrono::seconds(5));
+    }
 
-    logger.log(qtransport::LogLevel::info, "Now unsubscribing");
-    client.unsubscribe(nspace, {}, {});
-
-    logger.log(qtransport::LogLevel::info,
-               "Sleeping for 15 seconds before exiting");
-    std::this_thread::sleep_for(std::chrono::seconds(15));
   }
-  std::this_thread::sleep_for(std::chrono::seconds(5));
+  std::this_thread::sleep_for(std::chrono::seconds(10));
 
   return 0;
 }
