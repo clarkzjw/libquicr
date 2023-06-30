@@ -1,8 +1,24 @@
+find_package(OpenCV REQUIRED)
+
+message(STATUS "OpenCV library status:")
+message(STATUS "    config: ${OpenCV_DIR}")
+message(STATUS "    version: ${OpenCV_VERSION}")
+message(STATUS "    libraries: ${OpenCV_LIBS}")
+message(STATUS "    include path: ${OpenCV_INCLUDE_DIRS}")
+
+include_directories(${OpenCV_INCLUDE_DIRS})
+
 add_executable(really
         really.cpp
         subscription.cpp
         testLogger.cpp)
-target_link_libraries(really PRIVATE quicr  picotls-core picotls-openssl)
+target_link_libraries(really 
+        PRIVATE 
+                quicr 
+                picotls-core 
+                picotls-openssl
+                ${OpenCV_LIBS}
+                )
 
 target_compile_options(really
         PRIVATE
@@ -21,7 +37,13 @@ set_target_properties(really
 # --------------------------------
 add_executable( reallyTest reallyTest.cpp testLogger.cpp)
 
-target_link_libraries( reallyTest LINK_PUBLIC quicr  picotls-core picotls-openssl)
+target_link_libraries( reallyTest 
+        PRIVATE
+                quicr  
+                picotls-core 
+                picotls-openssl
+                ${OpenCV_LIBS}
+                )
 
 target_compile_options(reallyTest
         PRIVATE

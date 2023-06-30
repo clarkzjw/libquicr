@@ -145,11 +145,12 @@ main(int argc, char* argv[])
                           .port = uint16_t(port),
                           .proto = quicr::RelayInfo::Protocol::QUIC };
 
-  qtransport::TransportConfig tcfg{ .tls_cert_filename = NULL,
-                                    .tls_key_filename = NULL };
-  quicr::QuicRClient client(relay, tcfg, logger);
-
   if (data.size() > 0) {
+    qtransport::TransportConfig tcfg{ .tls_cert_filename = NULL,
+                                  .tls_key_filename = NULL,
+                                  .debug = true };
+    quicr::QuicRClient client(relay, tcfg, logger);
+
     auto nspace = quicr::Namespace(name, 96);
     logger.log(qtransport::LogLevel::info,
                "Publish Intent for name: " + std::string(name) +
@@ -177,6 +178,12 @@ main(int argc, char* argv[])
 
   } else {
     // do subscribe
+    qtransport::TransportConfig tcfg{ .tls_cert_filename = NULL,
+                                    .tls_key_filename = NULL,
+                                    .debug = false };
+    quicr::QuicRClient client(relay, tcfg, logger);
+
+
     logger.log(qtransport::LogLevel::info, "Subscribe");
     auto sd = std::make_shared<subDelegate>(logger);
     auto nspace = quicr::Namespace(name, 96);
