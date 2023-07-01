@@ -17,7 +17,7 @@ target_link_libraries(really
                 quicr 
                 picotls-core 
                 picotls-openssl
-                ${OpenCV_LIBS}
+		#${OpenCV_LIBS}
                 )
 
 target_compile_options(really
@@ -42,7 +42,7 @@ target_link_libraries( reallyTest
                 quicr  
                 picotls-core 
                 picotls-openssl
-                ${OpenCV_LIBS}
+		#${OpenCV_LIBS}
                 )
 
 target_compile_options(reallyTest
