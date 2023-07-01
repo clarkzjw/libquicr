@@ -674,6 +674,9 @@ QuicRClientRawSession::handle(messages::MessageBuffer&& msg)
         context.group_id = datagram.header.name.bits<uint64_t>(16, 32);
         context.object_id = datagram.header.name.bits<uint64_t>(0, 16);
 
+        std::cout << "context.group_id " << context.group_id << ", previous_group_id: " << context.prev_group_id << std::endl;
+        std::cout << "object_id " << context.object_id << ", previous object_id: " << context.prev_object_id << std::endl;
+
         if (context.group_id - context.prev_group_id > 1) {
           std::ostringstream log_msg;
           log_msg << "RX Group jump for ns: " << ns << " " << context.group_id

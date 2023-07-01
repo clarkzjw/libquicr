@@ -57,12 +57,13 @@ uchar* createImage(Mat baseImage, string basename) {
 		CV_RGB(118, 185, 0), //font color
 		2);
 
-	string filename = "result/" + basename + text + ".bmp";
+	string filename = basename + text + ".bmp";
 	cout << filename << endl;
 	imwrite(filename, img);
 
 	uchar* ptrImg = img.data;
-	int size = img.rows * img.cols * img.channels() * sizeof(uchar);
+	// int size = img.rows * img.cols * img.channels() * sizeof(uchar);
+	int size = img.total() * img.elemSize();
 
 	cout << size << endl;
 	return ptrImg;

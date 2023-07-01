@@ -14,6 +14,9 @@ project(quicr
         DESCRIPTION "quicr library"
         LANGUAGES CXX)
 
+# set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -O0 -ggdb -gdwarf-4")
+# set(CMAKE_CXX_FLAGS "${CMAKE_C_FLAGS} -O0 -ggdb -gdwarf-4")
+
 option(CLANG_TIDY "Perform linting with clang-tidy" OFF)
 
 ###

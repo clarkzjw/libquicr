@@ -324,6 +324,7 @@ QuicRServerRawSession::handle_publish(
   context.prev_group_id = context.group_id;
   context.prev_object_id = context.object_id;
 
+  std::cout << "before onPublishObject" << std::endl;
   delegate.onPublisherObject(context_id, streamId, false, std::move(datagram));
 }
 

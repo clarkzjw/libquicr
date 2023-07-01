@@ -150,7 +150,7 @@ public:
    */
   void publishNamedObject(const quicr::Name& quicr_name,
                           uint8_t priority,
-                          uint16_t expiry_age_ms,
+                          uint32_t expiry_age_ms,
                           bool use_reliable_transport,
                           bytes&& data);
 
